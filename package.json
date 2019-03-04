@@ -1,0 +1,20 @@
+{
+  "name": "red-duplicado",
+  "version": "1.2.0",
+  "description": "Easy html element duplication. All the css properties are applied as styles. The element should look the same even if it has been moved out of the dom tree.",
+  "main": "index.js",
+  "scripts": {
+    "update": "npm version minor && npm publish",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mephisto83/red-duplicado.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mephisto83/red-duplicado/issues"
+  },
+  "homepage": "https://github.com/mephisto83/red-duplicado#readme"
+}
