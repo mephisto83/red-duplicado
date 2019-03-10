@@ -1,4 +1,4 @@
-var btn = document.querySelectorAll('.bd-example .btn-group button.btn.btn-secondary')[0];
+var btn = document.querySelectorAll('.bd-example .btn-group')[0];
 function Duplicate(htmlElement) {
     var el = htmlElement;
     var style = window.getComputedStyle(htmlElement);
@@ -38,7 +38,7 @@ function removeClasses(el) {
 
 }
 
-function Encapsul(el, ops) {
+function Encapsulate(el, ops) {
     ops = ops || {};
     var _el = el.cloneNode(true);
     el.parentNode.appendChild(_el);
@@ -50,8 +50,8 @@ function Encapsul(el, ops) {
     var abs = document.createElement('div');
     abs.style.position = 'absolute';
     abs.style.zIndex = 100;
-    abs.style.top = '400px';
-    abs.style.left = '200px';
+    abs.style.top = ops.top || '400px';
+    abs.style.left = ops.left || '200px';
     abs.style.width = `${bb.width}px`;
     abs.style.height = `${bb.height}px`;
     var rel = document.createElement('div');
@@ -62,10 +62,11 @@ function Encapsul(el, ops) {
     rel.appendChild(dup);
 
     document.body.appendChild(abs);
+
     return abs;
 }
 
 // exports.duplicate = Duplicate; 
-// exports.encapsolate = Encapsul;
+// exports.encapsolate = Encapsulate;
 
-Encapsul(btn);
+Encapsulate(btn);
