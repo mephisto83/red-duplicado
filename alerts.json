@@ -1,0 +1,37 @@
+{
+    "url": "https://getbootstrap.com/docs/4.3/components/alerts/",
+    "cssSelectors": [
+        {
+            "css": "div.alert.alert-primary",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-secondary",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-success",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-danger",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-warning",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-info",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-dark",
+            "category": "alert"
+        },
+        {
+            "css": "div.alert.alert-warning.alert-dismissible.fade.show",
+            "category": "alert"
+        }
+    ]
+}

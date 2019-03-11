@@ -1,0 +1,129 @@
+{
+    "url": "https://getbootstrap.com/docs/4.3/components/buttons/",
+    "cssSelectors": [
+        {
+            "css": "button.btn.btn-primary",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-secondary",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-success",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-danger",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-warning",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-info",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-light",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-dark",
+            "category": "button"
+        },
+        {
+            "css": "a.btn.btn-primary",
+            "category": "button"
+        },
+        {
+            "css": "input.btn.btn-primary",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-primary",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-secondary",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-success",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-danger",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-warning",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-info",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-outline-dark",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-primary.btn-lg",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-secondary.btn-lg",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-primary.btn-sm",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-secondary.btn-sm",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-primary.btn-lg.btn-block",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-secondary.btn-lg.btn-block",
+            "category": "button"
+        },
+        {
+            "css": "a.btn.btn-secondary.btn-lg.active",
+            "category": "button"
+        },
+        {
+            "css": "a.btn.btn-primary.btn-lg.active",
+            "category": "button"
+        },
+        {
+            "css": "button.btn.btn-lg.btn-primary",
+            "category": "button"
+        },
+        {
+            "css": "a.btn.btn-primary.btn-lg.disabled",
+            "category": "button"
+        },
+        {
+            "css": "a.btn.btn-secondary.btn-lg.disabled",
+            "category": "button"
+        },
+        {
+            "css": "label.btn.btn-secondary.active",
+            "category": "button"
+        },
+        {
+            "css": "div.btn-group.btn-group-toggle",
+            "category": "button"
+        },
+        {
+            "css": "label.btn.btn-secondary",
+            "category": "button"
+        }
+    ]
+}

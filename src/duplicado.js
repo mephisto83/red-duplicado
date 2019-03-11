@@ -3,7 +3,34 @@ var cssSelectors = [];
 var cssSelectorsObjects = [];
 var selectedCategory = 'button';
 var cssSelectorList = null;
-
+const CATEGORIES = [
+    'button',
+    'buttongroup',
+    'inputgroup',
+    'input',
+    'alert',
+    'badge',
+    'breadcrumbs',
+    'card',
+    'carousel',
+    'collapse',
+    'dropdown',
+    'radio',
+    'form',
+    'jumbotron',
+    'listgroup',
+    'mediaobject',
+    'modal',
+    'navs',
+    'navbar',
+    'pagination',
+    'popover',
+    'progress',
+    'scrollspy',
+    'spinner',
+    'toast',
+    'tooltips'
+];
 // var btn = document.querySelectorAll('.bd-example .btn-group')[0];
 function Duplicate(htmlElement) {
     var el = htmlElement;
@@ -144,7 +171,7 @@ function createCategorySelector() {
   <option value="audi">Audi</option>
 </select> */
     var sel = document.createElement('select');
-    ['button', 'buttongroup', 'inputgroup', 'input'].map(cat => {
+    CATEGORIES.map(cat => {
         var op = document.createElement('option');
         op.innerHTML = cat;
         op.value = cat;
@@ -172,6 +199,41 @@ function refresh() {
     drawBoxesAround(cssSelectors);
     drawCssSelectorList(cssSelectorList);
 }
+
+var InterestPoints = null;
+function collectInterestPoints() {
+    console.log('collecting interest points');
+    var interestPoints = _collectInterestPoints();
+    InterestPoints = interestPoints;
+    console.log(`interest points ${InterestPoints.length}`)
+    return InterestPoints.length;
+}
+function _collectInterestPoints(root, depth) {
+    var results = [];
+    if (depth > 200) {
+        return results;
+    }
+    depth = depth || 0;
+    root = root || document.body;
+    console.log('collecting points');
+    var listeners = getEventListeners(root);
+    if (Object.keys(listeners).length) {
+        results.push({
+            events: Object.keys(listeners),
+            el: root
+        });
+    }
+    for (var i = 0; i < root.children.length; i++) {
+        try {
+            var temp = _collectInterestPoints(root.children[i], depth + 1);
+            results = [...results, ...temp]
+        } catch (e) {
+
+        }
+    }
+    return results;
+}
+
 function enableScreen() {
 
     var btn = createSubmitBtn(() => {
@@ -388,4 +450,5 @@ window.Duplicate = Duplicate;
 window.PrintDomToString = PrintDomToString;
 window.EnableScreen = enableScreen;
 window.DisableScreen = disableScreen;
+window.CollectInterestPoints = collectInterestPoints;
 // Encapsulate(btn);

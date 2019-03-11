@@ -10,7 +10,14 @@ class Process {
     }
     async load() {
         console.log('load puppeteer');
-        const browser = await this.puppeteer.launch({ devtools: true, headless: false });
+        const browser = await this.puppeteer.launch({
+            defaultViewport: {
+                height: 800,
+                width: 1500
+            },
+            devtools: true,
+            headless: false
+        });
         this.browser = browser;
         const page = await this.browser.newPage();
         console.log('new page');
@@ -44,8 +51,20 @@ class Process {
             return result;
         }, cssSelector);
     }
+    async collectInterestPoints() {
+        let result = [];
+        await this.loadScript('./src/duplicado.js');
+        await this.readLine('window.getEventListeners = getEventListeners');
+        var interestPointsCount = await this.page.evaluate(() => {
+            return window.CollectInterestPoints();
+        }, { includeCommandLineAPI: true })
+        console.log(`there are ${interestPointsCount} interesting points`);
+    }
     async collectCssSelectors() {
         await this.loadScript('./src/duplicado.js');
+        await this.page.evaluate(() => {
+            window.EnableScreen();
+        })
         var done = false;
         var category = 'button';
         var cssCollection = [];

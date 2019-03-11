@@ -1,0 +1,69 @@
+{
+    "url": "https://getbootstrap.com/docs/4.3/components/badge/",
+    "cssSelectors": [
+        {
+            "css": "span.badge.badge-secondary",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-light",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-primary",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-warning",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-dark",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-success",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-pill.badge-info",
+            "category": "badge"
+        },
+        {
+            "css": "span.badge.badge-danger",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-primary",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-secondary",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-success",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-danger",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-warning",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-info",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-light",
+            "category": "badge"
+        },
+        {
+            "css": "a.badge.badge-dark",
+            "category": "badge"
+        }
+    ]
+}
