@@ -2,6 +2,7 @@ var fs = require('fs');
 const puppeteer = require('puppeteer');
 var readLine = require('./readline').default;
 const DONE_KEY = '@done';
+const clipboardy = require('clipboardy');
 class Process {
     constructor() {
         this.puppeteer = puppeteer;
@@ -51,14 +52,54 @@ class Process {
             return result;
         }, cssSelector);
     }
-    async collectInterestPoints() {
+    async filterInterestingElement(client, elCount) {
+        var interestingIndexes = [];
+        for (var itemIndex = 0; itemIndex < elCount; itemIndex++) {
+            var { result } = await client.send('Runtime.evaluate', { expression: `window.GetIntersectingElement(${itemIndex})` })
+            const { listeners } = await client.send('DOMDebugger.getEventListeners', { objectId: result.objectId })
+            if (Object.keys(listeners).length) {
+                interestingIndexes.push(itemIndex);
+            }
+            else {
+                var interesting = await this.page.evaluate((i) => {
+                    return window.IsInterestingElement(i);
+                }, itemIndex);
+                if (interesting) {
+                    interestingIndexes.push(itemIndex);
+                }
+            }
+        }
+        return interestingIndexes;
+    }
+    async collectInterestPoints(url) {
         let result = [];
+        await this.goto(url);
+        const client = await this.page.target().createCDPSession();
+
         await this.loadScript('./src/duplicado.js');
-        await this.readLine('window.getEventListeners = getEventListeners');
-        var interestPointsCount = await this.page.evaluate(() => {
-            return window.CollectInterestPoints();
-        }, { includeCommandLineAPI: true })
-        console.log(`there are ${interestPointsCount} interesting points`);
+
+        var done = false;
+        do {
+            var elCount = await this.page.evaluate(() => {
+                return window.CollectHTMLObjectsIntersectingWindow();
+            });
+
+            var interestingIndexes = await this.filterInterestingElement(client, elCount)
+
+            console.log(`visible elements ${elCount}`);
+            console.log(`interesting elements ${interestingIndexes.length}`);
+            var scrolled = await this.page.evaluate(() => {
+                return window.ScrollPage()
+            });
+
+            done = !scrolled;
+            console.log(`scrolled ${scrolled}`);
+            await this.readLine();
+
+            await this.page.evaluate(() => {
+                return window.ClearDrawnInterestPoints();
+            });
+        } while (!done);
     }
     async collectCssSelectors() {
         await this.loadScript('./src/duplicado.js');

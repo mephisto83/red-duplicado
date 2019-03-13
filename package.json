@@ -19,5 +19,8 @@
   "homepage": "https://github.com/mephisto83/red-duplicado#readme",
   "devDependencies": {
     "puppeteer": "^1.13.0"
+  },
+  "dependencies": {
+    "clipboardy": "^1.2.3"
   }
 }

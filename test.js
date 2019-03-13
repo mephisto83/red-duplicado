@@ -39,9 +39,7 @@ switch (proc) {
         (async () => {
             var process = new Process();
             await process.load();
-            await process.goto(TEST_URL);
-
-            var res = await process.collectInterestPoints();
+            var res = await process.collectInterestPoints(TEST_URL);
             console.log(res);
             await process.saveJsonTo('./interest-points.json', {
                 url: process.page.url(),

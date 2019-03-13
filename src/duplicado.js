@@ -1,4 +1,4 @@
-
+var Html_Elements_Intersecting_Screen = [];
 var cssSelectors = [];
 var cssSelectorsObjects = [];
 var selectedCategory = 'button';
@@ -164,12 +164,6 @@ function getBox(el) {
     }
 }
 function createCategorySelector() {
-    /* <select>
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-</select> */
     var sel = document.createElement('select');
     CATEGORIES.map(cat => {
         var op = document.createElement('option');
@@ -208,20 +202,53 @@ function collectInterestPoints() {
     console.log(`interest points ${InterestPoints.length}`)
     return InterestPoints.length;
 }
+function drawOnInterestsPoints() {
+    InterestPoints.map(t => {
+        drawBox(
+            getBox(t.el), {
+                bgcolor: '#0000dd11'
+            });
+    });
+}
+function clearDrawnInterestPoints() {
+    var obs = document.querySelectorAll('.drawed-box-duplicado');
+    for (var i = 0; i < obs.length; i++) {
+        obs[i].parentNode.removeChild(obs[i]);
+    }
+}
+function isVisible(htmlElement) {
+    var style = window.getComputedStyle(htmlElement);
+    if (parseFloat(style.opacity)) {
+        if (style.visibility !== 'hidden') {
+            if (style.display !== 'none') {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 function _collectInterestPoints(root, depth) {
     var results = [];
-    if (depth > 200) {
+    if (depth > 255) {
         return results;
     }
     depth = depth || 0;
     root = root || document.body;
     console.log('collecting points');
     var listeners = getEventListeners(root);
-    if (Object.keys(listeners).length) {
-        results.push({
-            events: Object.keys(listeners),
-            el: root
-        });
+    if (isVisible(root)) {
+        if (Object.keys(listeners).length) {
+            results.push({
+                events: Object.keys(listeners),
+                el: root
+            });
+        }
+        else if (root.nodeName === 'A' && root.getAttribute('href')) {
+            results.push({
+                events: Object.keys(listeners),
+                el: root
+            });
+        }
     }
     for (var i = 0; i < root.children.length; i++) {
         try {
@@ -412,7 +439,45 @@ function calculateOverlap(el1, el2) {
     }
     return 0;
 }
+function getIntersectingElement(index) {
+    return Html_Elements_Intersecting_Screen[index];
+}
+function isInterestingElement(index) {
+    var el = Html_Elements_Intersecting_Screen[index];
+    return ['input', 'a', 'select', 'textarea', 'button'].indexOf(el.nodeName.toLowerCase()) !== -1;
+}
+function collectHTMLObjectsIntersectingWindow() {
+    var scrollLeft = window.pageXOffset;
+    var scrollTop = window.pageYOffset;
+    var l1 = { y: scrollTop, x: 0 };
+    var r1 = { y: scrollTop + window.innerHeight, x: scrollLeft + window.innerWidth };
+    var intersectingElements = _collectHTMLObjectsIntersectingWindow(l1, r1, document.body);
 
+    Html_Elements_Intersecting_Screen = intersectingElements.filter(x => {
+        return isVisible(x);
+    });
+    return Html_Elements_Intersecting_Screen.length;
+}
+function _collectHTMLObjectsIntersectingWindow(l1, r1, root) {
+    var result = [];
+
+    var scrollLeft = window.pageXOffset;
+    var scrollTop = window.pageYOffset;
+    var bb = root.getBoundingClientRect();
+    var l2 = { y: bb.top + scrollTop, x: bb.left + scrollLeft };
+    var r2 = { y: bb.bottom + scrollTop, x: bb.right + scrollLeft };
+    if (doOverlap(l1, r1, l2, r2)) {
+        result.push(root);
+    }
+
+    if (root.children && root.children.length) {
+        for (var i = 0; i < root.children.length; i++) {
+            result = [...result, ..._collectHTMLObjectsIntersectingWindow(l1, r1, root.children[i])];
+        }
+    }
+
+    return result;
+}
 function doOverlap(l1, r1, l2, r2) {
     // If one rectangle is on left side of other  
     if (l1.x > r2.x || l2.x > r1.x) {
@@ -451,4 +516,20 @@ window.PrintDomToString = PrintDomToString;
 window.EnableScreen = enableScreen;
 window.DisableScreen = disableScreen;
 window.CollectInterestPoints = collectInterestPoints;
+window.DrawOnInterestsPoints = drawOnInterestsPoints;
+window.ClearDrawnInterestPoints = clearDrawnInterestPoints;
+window.CollectHTMLObjectsIntersectingWindow = collectHTMLObjectsIntersectingWindow;
+window.IsInterestingElement = isInterestingElement;
+window.GetIntersectingElement = getIntersectingElement;
+var lastScrollTop = 0;
+window.ScrollPage = function () {
+    var hasVerticalScrollbar = document.body.scrollHeight > window.innerHeight;
+    if (hasVerticalScrollbar) {
+        lastScrollTop = window.scrollY;
+        window.scroll(0, window.scrollY + (window.innerHeight / 2));
+        if (window.scrollY !== lastScrollTop)
+            return true;
+    }
+    return false;
+}
 // Encapsulate(btn);
