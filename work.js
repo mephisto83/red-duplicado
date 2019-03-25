@@ -4,7 +4,8 @@ require('./src/array');
 const DO_WORK = '5';
 const proc = DO_WORK;
 const URL_2 = 'https://colorlib.com/wp/templates/';
-const SCREEN_SHOT_FOLDER = 'D:/dev/git/red-data-set/data';
+const SCREEN_SHOT_FOLDER = ['//192.168.1.113', 'Public', 'data-set', 'web'].join('/');// 'D:/dev/git/red-data-set/data';
+// const SCREEN_SHOT_FOLDER = 'D:/dev/git/red-data-set/data';
 const TOUCHED_URLS = 'history.json';
 const URLS_FOUND = 'future.json';
 function getPathFromUrl(url) {
@@ -29,9 +30,6 @@ switch (proc) {
 
             do {
 
-
-
-
                 var url = urls.shift();
                 usedUrls.push(url);
                 console.log(`urls: ${urls.length}`)
@@ -48,7 +46,7 @@ switch (proc) {
                     console.log(usedUrls);
                     console.log(`urls: ${urls.length}`)
                     await process.collectInterestPoints({ url, folder: SCREEN_SHOT_FOLDER });
-                    urls = [...urls, ...res].unique(e => getPathFromUrl(e)).unique(e => getPathFromUrlComment(e));
+                    urls = [...urls].unique(e => getPathFromUrl(e)).unique(e => getPathFromUrlComment(e));
                     await process.saveJsonTo(path.join(SCREEN_SHOT_FOLDER, URLS_FOUND), urls);
                 } catch (e) {
                     console.log(e);

@@ -6,6 +6,11 @@ require('./array');
 const puppeteer = require('puppeteer');
 var readLine = require('./readline').default;
 const DONE_KEY = '@done';
+const debugging = false;
+function consoleLog(e) {
+    if (debugging)
+        console.log(e)
+}
 const clipboardy = require('clipboardy');
 function GUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -21,18 +26,18 @@ class Process {
         this.page = null;
     }
     async load() {
-        console.log('load puppeteer');
+        consoleLog('load puppeteer');
         const browser = await this.puppeteer.launch({
             defaultViewport: {
                 height: 800,
                 width: 1500
             },
             devtools: true,
-            headless: false
+            headless: true
         });
         this.browser = browser;
         const page = await this.browser.newPage();
-        console.log('new page');
+        consoleLog('new page');
         this.page = page;
 
     }
@@ -69,9 +74,9 @@ class Process {
 
 
             urls = [...newurls, ...urls].unique(e => e);
-            console.log(`urls : ${urls.length}`)
+            consoleLog(`urls : ${urls.length}`)
             await this.saveJsonTo(file_path, urls);
-        } catch (e) { console.log(e) }
+        } catch (e) { consoleLog(e) }
         return urls;
     }
     readWordList() {
@@ -82,7 +87,7 @@ class Process {
         var list = this.readWordList();;
         var wikiWorsdd = await this.graftWikipedia();
         list = [...list, ...wikiWorsdd].unique(e => e);
-        console.log(list.length)
+        consoleLog(list.length)
         num = num || list.length;
         for (var i = 0; i < Math.min(list.length, num); i++) {
             var res = await this.graftGoogle(list[i]);
@@ -94,7 +99,7 @@ class Process {
     async getSearchKeyWords(urls) {
         var list = [];
         for (var i = 0; i < urls.length; i++) {
-            console.log('url: ' + urls[i])
+            consoleLog('url: ' + urls[i])
             try {
                 await this.goto(urls[i]);
                 var temp = await this.page.evaluate(() => {
@@ -460,7 +465,7 @@ class Process {
     async readCssComponents(file) {
         await this.loadScript('./src/duplicado.js');
         var inputFile = await this.readFile(file);
-        console.log('read css selectors file :  ' + file);
+        consoleLog('read css selectors file :  ' + file);
         var { cssSelectors } = inputFile;
 
         var res = await Promise.all(cssSelectors.map(async cssAndCategory => {
@@ -559,11 +564,11 @@ class Process {
         if (alreadyExists) {
             return;
         }
-        console.log(dir)
+        consoleLog(dir)
         return await new Promise((resolve, fail) => {
             var res = fs.existsSync(dir)
             if (!res) {
-                console.log('making dir');
+                consoleLog('making dir');
                 fs.mkdirSync(dir)
                 resolve();
             }
@@ -626,21 +631,21 @@ class Process {
 
             var interestingIndexes = await this.filterInterestingElement(client, elCount)
 
-            console.log(`visible elements ${elCount}`);
-            console.log(`interesting elements ${interestingIndexes.length}`);
+            consoleLog(`visible elements ${elCount}`);
+            consoleLog(`interesting elements ${interestingIndexes.length}`);
             var imageFileName = `image_${GUID()}.png`;
             var interestingPointData = await this.extractInterestingElementInfo(interestingIndexes);
 
             var events = await this.getEventsListenedTo(client, interestingIndexes);
             if (events.length !== interestingIndexes.length) {
-                console.log(`events: ${events.length}, interestingIndexes: ${interestingIndexes.length} `)
+                consoleLog(`events: ${events.length}, interestingIndexes: ${interestingIndexes.length} `)
                 throw 'events interesting points mis match'
             }
             interestingIndexes.map((t, _i) => {
                 interestingPointData[_i].events = events[_i] || [];
             });
             var filePath = path.join(folder, siteFolder, imageFileName);
-            console.log('writing screen shot ' + filePath);
+            consoleLog('writing screen shot ' + filePath);
             await this.page.screenshot({
                 path: filePath,
                 type: 'png'
@@ -656,7 +661,7 @@ class Process {
             });
 
             done = !scrolled;
-            console.log(`scrolled ${scrolled}`);
+            consoleLog(`scrolled ${scrolled}`);
             ///            await this.readLine();
 
             await this.page.evaluate(() => {
@@ -680,7 +685,7 @@ class Process {
         var cssCollection = [];
         while (!done) {
             var res = await this.readLine(`enter in css selector for ${category}`);
-            console.log('');
+            consoleLog('');
             if (res !== DONE_KEY) {
                 if (res.indexOf('!') === 0) {
                     category = res.substr(1);
@@ -694,7 +699,7 @@ class Process {
                 }
                 else if (await this.checksForMatches(res)) {
                     cssCollection.push({ category, css: res });
-                    console.log(cssCollection.map(x => x.css).join(`
+                    consoleLog(cssCollection.map(x => x.css).join(`
 `));
                 }
             }
@@ -732,7 +737,7 @@ class Process {
         return Promise.resolve();
     }
     async readLine(q) {
-        console.log(readLine);;
+        consoleLog(readLine);;
         return await readLine(q);
     }
     async checksForMatches(cssSelector) {
@@ -741,21 +746,21 @@ class Process {
                 var res = window.document.body.querySelectorAll(selector);
                 return res.length;
             } catch (e) {
-                console.log(e);
+                consoleLog(e);
                 return false;
             }
         }, cssSelector);
         return ok;
     }
     async loadScript(file) {
-        console.log('loading script ' + file);
+        consoleLog('loading script ' + file);
         var script = fs.readFileSync(file, 'utf8');
-        console.log('loaded ' + script.length);
+        consoleLog('loaded ' + script.length);
         var ok = await this.page.evaluate((_script) => {
             try {
                 eval(_script);
             } catch (e) {
-                console.log(e);
+                consoleLog(e);
                 return false;
             }
             return true;
@@ -764,7 +769,7 @@ class Process {
         return ok;
     }
     async close() {
-        console.log('closing ');
+        consoleLog('closing ');
 
         if (this.browser) {
             var pages = await this.browser.pages();
@@ -773,13 +778,13 @@ class Process {
             }
             this.page = null;
             await this.browser.close();
-            console.log('closed ');
+            consoleLog('closed ');
         }
         this.browser = null;
     }
     async goto(url) {
         await this.page.goto(url);
-        console.log('opened ' + url);
+        consoleLog('opened ' + url);
     }
 }
 
