@@ -1,9 +1,14 @@
+require('./src/array');
 var Process = require('./src/process').default;
 const COLLECT_CSS_SELECTORS = '1';
 const PRINT_CSS_RESULTS = '2';
 const CAPTURE_INTEREST_POINTS = '3';
-const proc = CAPTURE_INTEREST_POINTS;
+const DO_WORK = '5';
+const COLLECT_URLS = '4';
+const proc = DO_WORK;
 const TEST_URL = 'https://getbootstrap.com/docs/4.3/components/toasts/';
+const URL_2 = 'https://colorlib.com/wp/templates/';
+const SCREEN_SHOT_FOLDER = 'D:/dev/git/red-data-set/data';
 const examples = [
     { url: 'https://getbootstrap.com/docs/4.3/components/alerts/', file: './alerts.json' },
     { url: 'https://getbootstrap.com/docs/4.3/components/badge/', file: './badges.json' },
@@ -35,11 +40,36 @@ switch (proc) {
             await process.close();
         })();
         break;
+    case DO_WORK:
+        (async () => {
+            var urls = [URL_2];
+            do {
+                var url = urls.shift();
+                var process = new Process();
+                await process.load();
+                var res = await process.collectUrls({ url });
+                console.log(res);
+                urls = [...urls, res].unique(e => e);
+                await process.collectInterestPoints({ url, folder: SCREEN_SHOT_FOLDER });
+                await process.close();
+                urls = [];
+            } while (urls.length)
+        })();
+        break;
+    case COLLECT_URLS:
+        (async () => {
+            var process = new Process();
+            await process.load();
+            var res = await process.collectUrls({ url: URL_2 });
+            console.log(res);
+            await process.close();
+        })();
+        break;
     case CAPTURE_INTEREST_POINTS:
         (async () => {
             var process = new Process();
             await process.load();
-            var res = await process.collectInterestPoints(TEST_URL);
+            var res = await process.collectInterestPoints({ url: URL_2, folder: SCREEN_SHOT_FOLDER });
             console.log(res);
             await process.saveJsonTo('./interest-points.json', {
                 url: process.page.url(),

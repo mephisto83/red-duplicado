@@ -35,13 +35,13 @@ const CATEGORIES = [
 function Duplicate(htmlElement) {
     var el = htmlElement;
     var style = window.getComputedStyle(htmlElement);
-    console.log(style);
+    // console.log(style);
     var properties = Object.keys(style);
     var _style = [];
     properties.map(prop => {
         var val = style.getPropertyValue(prop);
         if (val) {
-            console.log(`${prop}: ${val}`);
+            // console.log(`${prop}: ${val}`);
             _style.push(`${prop}:${val}`)
         }
     });
@@ -50,12 +50,12 @@ function Duplicate(htmlElement) {
             var _child = htmlElement.children[i];
             child = Duplicate(_child);
         } catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     }
     el.setAttribute('style', _style.join(';'));
-    console.log('set attribute');
-    console.log(_style);
+    // console.log('set attribute');
+    // console.log(_style);
     return el;
 }
 
@@ -72,8 +72,8 @@ function removeClasses(el) {
 }
 function drawBox(box, ops) {
     ops = ops || {};
-    console.log('draw box');
-    console.log(box);
+    // console.log('draw box');
+    // console.log(box);
     var div = document.createElement('div');
     div.style.position = 'absolute';
     var x = Math.min(box.start.x, box.end.x);
@@ -196,10 +196,10 @@ function refresh() {
 
 var InterestPoints = null;
 function collectInterestPoints() {
-    console.log('collecting interest points');
+    // console.log('collecting interest points');
     var interestPoints = _collectInterestPoints();
     InterestPoints = interestPoints;
-    console.log(`interest points ${InterestPoints.length}`)
+    // console.log(`interest points ${InterestPoints.length}`)
     return InterestPoints.length;
 }
 function drawOnInterestsPoints() {
@@ -218,13 +218,15 @@ function clearDrawnInterestPoints() {
 }
 function isVisible(htmlElement) {
     var style = window.getComputedStyle(htmlElement);
-    if (parseFloat(style.opacity)) {
-        if (style.visibility !== 'hidden') {
-            if (style.display !== 'none') {
-                return true;
+    var bb = htmlElement.getBoundingClientRect();
+    if (bb.width && bb.height && htmlElement !== document.body)
+        if (parseFloat(style.opacity)) {
+            if (style.visibility !== 'hidden') {
+                if (style.display !== 'none') {
+                    return true;
+                }
             }
         }
-    }
     return false;
 }
 function _collectInterestPoints(root, depth) {
@@ -234,7 +236,7 @@ function _collectInterestPoints(root, depth) {
     }
     depth = depth || 0;
     root = root || document.body;
-    console.log('collecting points');
+    // console.log('collecting points');
     var listeners = getEventListeners(root);
     if (isVisible(root)) {
         if (Object.keys(listeners).length) {
@@ -266,7 +268,7 @@ function enableScreen() {
     var btn = createSubmitBtn(() => {
         completedBoxes.map(box => {
             var re = findBestMatchinDomObjects(box);
-            console.log(re[0]);
+            // console.log(re[0]);
             if (re && re[0] && re[0].score && re[0].score > .9) {
                 var css = extractCssSelector(re[0].el);
                 if (cssSelectors.indexOf(css) === -1) {
@@ -334,7 +336,7 @@ function enableScreen() {
                 }
                 break;
             default:
-                console.log(ev.code);
+                // console.log(ev.code);
                 break;
         }
     };
@@ -442,10 +444,26 @@ function calculateOverlap(el1, el2) {
 function getIntersectingElement(index) {
     return Html_Elements_Intersecting_Screen[index];
 }
+function extractInterestingElementInfo(indexes) {
+    var results = [];
+    indexes.map(index => {
+        var el = Html_Elements_Intersecting_Screen[index];
+        var bb = el.getBoundingClientRect();
+        var duplicateElement = Duplicate(el);
+
+        results.push({
+            element: duplicateElement.outerHTML,
+            boundingBox: { left: bb.left, top: bb.top, right: bb.right, bottom: bb.bottom, width: bb.with, height: bb.height }
+        });
+    });
+
+    return results;
+}
 function isInterestingElement(index) {
     var el = Html_Elements_Intersecting_Screen[index];
     return ['input', 'a', 'select', 'textarea', 'button'].indexOf(el.nodeName.toLowerCase()) !== -1;
 }
+
 function collectHTMLObjectsIntersectingWindow() {
     var scrollLeft = window.pageXOffset;
     var scrollTop = window.pageYOffset;
@@ -521,12 +539,13 @@ window.ClearDrawnInterestPoints = clearDrawnInterestPoints;
 window.CollectHTMLObjectsIntersectingWindow = collectHTMLObjectsIntersectingWindow;
 window.IsInterestingElement = isInterestingElement;
 window.GetIntersectingElement = getIntersectingElement;
+window.ExtractInterestingElementInfo = extractInterestingElementInfo;
 var lastScrollTop = 0;
 window.ScrollPage = function () {
     var hasVerticalScrollbar = document.body.scrollHeight > window.innerHeight;
     if (hasVerticalScrollbar) {
         lastScrollTop = window.scrollY;
-        window.scroll(0, window.scrollY + (window.innerHeight / 2));
+        window.scroll(0, window.scrollY + (window.innerHeight / 3));
         if (window.scrollY !== lastScrollTop)
             return true;
     }
