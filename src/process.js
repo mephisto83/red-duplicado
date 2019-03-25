@@ -179,7 +179,14 @@ class Process {
         }
         return result;
     }
+    static async randomWait(timeout) {
+        return await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, timeout || Math.random() * 20000);
+        })
 
+    }
     async wait(timeout) {
         return await new Promise((resolve) => {
             setTimeout(() => {
