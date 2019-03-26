@@ -6,7 +6,8 @@
   "scripts": {
     "update": "npm version minor && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "collect" :"node --max-old-space-size=8192 collectUrls.js"
+    "collect" :"node --max-old-space-size=8192 collectUrls.js",
+    "work" :"node --max-old-space-size=8192 work.js"
   },
   "repository": {
     "type": "git",
